@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useState } from 'react';
 import { Text, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AwesomeButton from 'react-native-really-awesome-button';
@@ -9,22 +9,17 @@ import { RTextInput } from './TextInput';
 
 interface Props {
   showModal: boolean;
-  resolution: Resolution;
-  onResolutionChange: Dispatch<SetStateAction<Resolution>>;
+  onAddResolution: (resolution: Resolution) => void;
+  onModalClose: () => void;
 }
 
 export const ResolutionModal: React.FC<Props> = props => {
   const [resolution, setResolution] = useState<Resolution>({
-    ...props.resolution
+    date: new Date(),
+    text: ''
   });
 
-  const [showModal, setShowModal] = useState<boolean>(props.showModal);
-  useEffect(() => {
-    setShowModal(props.showModal);
-  }, [props.showModal]);
-
   const onResolutionChange = (newResolution: Partial<Resolution>) => {
-    debugger;
     setResolution({
       ...resolution,
       ...newResolution
@@ -35,9 +30,9 @@ export const ResolutionModal: React.FC<Props> = props => {
     <Modal
       animationType='slide'
       transparent={false}
-      visible={showModal}
+      visible={props.showModal}
       onRequestClose={() => {
-        console.log('Modal has been closed.');
+        // props.onModalClose()
       }}
     >
       <Row fillHeight={true}>
@@ -57,14 +52,13 @@ export const ResolutionModal: React.FC<Props> = props => {
             onChange={(_, date) => onResolutionChange({ date: date })}
           />
           <AwesomeButton
-          width={150}
-          onPress={() => {
-            props.onResolutionChange(resolution)
-            setShowModal(false)
-          }}
-        >
-          <Text>Add Resolution</Text>
-        </AwesomeButton>
+            width={150}
+            onPress={() => {
+              props.onAddResolution(resolution);
+            }}
+          >
+            <Text>Add Resolution</Text>
+          </AwesomeButton>
         </Column>
       </Row>
     </Modal>

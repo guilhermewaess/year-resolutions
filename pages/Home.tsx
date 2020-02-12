@@ -6,6 +6,7 @@ import AwesomeButton from 'react-native-really-awesome-button';
 import { ResolutionModal } from '../components/ResolutionModal';
 import { Resolution } from '../types/interfaces';
 import { Column } from '../components/Column';
+import { ResolutionList } from '../components/ResolutionList';
 
 const HomeContainer = styled.View`
   flex: 1;
@@ -13,11 +14,13 @@ const HomeContainer = styled.View`
 
 export const Home: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [resolution, setResolution] = useState<Resolution>({
-    date: new Date(),
-    text: ''
-  });
+  const [resolutions, setResolutions] = useState<Resolution[]>([]);
 
+  const onAddResolution = resolution => {
+    resolution.text = Math.random().toString()
+    setResolutions([...resolutions, resolution]);
+    setShowAddModal(false);
+  };
   return (
     <HomeContainer>
       <Row justify='center'>
@@ -32,13 +35,13 @@ export const Home: React.FC = () => {
 
         <ResolutionModal
           showModal={showAddModal}
-          resolution={resolution}
-          onResolutionChange={setResolution}
+          onModalClose={() => setShowAddModal(false)}
+          onAddResolution={onAddResolution}
         />
       </Row>
       <Row fillHeight>
         <Column>
-          <Text>{JSON.stringify(resolution)}</Text>
+          <ResolutionList resolutions={resolutions} />
         </Column>
       </Row>
     </HomeContainer>
