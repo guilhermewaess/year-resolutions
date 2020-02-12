@@ -1,51 +1,45 @@
 import React, { useState } from 'react';
-import { Text, Platform } from 'react-native';
+import { Text } from 'react-native';
 import styled from 'styled-components/native';
 import { Row } from '../components/Row';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import AwesomeButton from 'react-native-really-awesome-button';
+import { ResolutionModal } from '../components/ResolutionModal';
+import { Resolution } from '../types/interfaces';
+import { Column } from '../components/Column';
 
 const HomeContainer = styled.View`
   flex: 1;
 `;
 
 export const Home: React.FC = () => {
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-
-    setDate(currentDate);
-    setShow(Platform.OS === 'ios' ? true : false);
-  };
-
-  const showMode = currentMode => {
-    setShow(true);
-    setMode(currentMode);
-  };
-
-  const showDatepicker = () => {
-    showMode('date');
-  };
-
-  const showTimepicker = () => {
-    showMode('time');
-  };
+  const [showAddModal, setShowAddModal] = useState<boolean>(false);
+  const [resolution, setResolution] = useState<Resolution>({
+    date: new Date(),
+    text: ''
+  });
 
   return (
     <HomeContainer>
-      <Row>
-        <DateTimePicker
-          testID='dateTimePicker'
-          timeZoneOffsetInMinutes={0}
-          value={date}
-          mode='date'
-          is24Hour={true}
-          display='default'
-          onChange={onChange}
+      <Row justify='center'>
+        <AwesomeButton
+          width={150}
+          onPress={() => {
+            setShowAddModal(true);
+          }}
+        >
+          <Text>+ ADD</Text>
+        </AwesomeButton>
+
+        <ResolutionModal
+          showModal={showAddModal}
+          resolution={resolution}
+          onResolutionChange={setResolution}
         />
-        <Text>Banana</Text>
+      </Row>
+      <Row fillHeight>
+        <Column>
+          <Text>{JSON.stringify(resolution)}</Text>
+        </Column>
       </Row>
     </HomeContainer>
   );
